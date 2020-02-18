@@ -10,11 +10,11 @@ Problem.DJmu = @(YN,W,mu,C) Problem.deta(YN*W+mu)'*(Problem.eta(YN*W+mu)-C);
 
 Problem.DJY = @(Y,W,mu,C) (Problem.deta(Y*W+mu) .* (Problem.eta(Y*W+mu)-C))*W';
 
-Problem.Vf = @(Y,K,b) Problem.sigma(Y*K+b);
-Problem.AdjVf = @(Y,P,K,b) -(P .* Problem.dsigma(Y*K+b))*K';
+Problem.Vf = @(Y,K,b) Problem.sigma(Y*K+repmat(b,1000,1));
+Problem.AdjVf = @(Y,P,K,b) -(P .* Problem.dsigma(Y*K+repmat(b,1000,1)))*K';
 
-Problem.DVfK = @(Y,P,K,b) Y'*(Problem.dsigma(Y*K+b) .* P);
-Problem.DVfb = @(Y,P,K,b) sum(Problem.dsigma(Y*K+b) .* P);
+Problem.DVfK = @(Y,P,K,b) Y'*(Problem.dsigma(Y*K+repmat(b,1000,1)) .* P);
+Problem.DVfb = @(Y,P,K,b) sum(Problem.dsigma(Y*K+repmat(b,1000,1)) .* P);
 
 
 

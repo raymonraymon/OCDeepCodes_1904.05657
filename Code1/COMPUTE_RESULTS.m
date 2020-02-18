@@ -4,6 +4,11 @@
 % numerical methods. http://arxiv.org/abs/1904.05657
 %
 % This file runs examples on various data sets and other settings.
+% clc;clear all;close all;
+% dbstop if error;
+clear all
+close all
+clc;
 domain = [-1, 1, -1, 1];
 plot_every_iterate = 0;
 
@@ -37,22 +42,27 @@ for fit = fits
                     [features, labels] = get_data_donut_1d(500);
                     [features_val, labels_val] = get_data_donut_1d(500);
                     niter = 5000;
+                    disp('donut1d');
                 case 'donut2d'
-                    [features, labels] = get_data_donut_2d(1000);
-                    [features_val, labels_val] = get_data_donut_2d(1000);
+                    [features, labels] = get_data_donut_2d(500);
+                    [features_val, labels_val] = get_data_donut_2d(500);
                     niter = 8000;
+                    disp('donut2d');
                 case 'spiral2d'
-                    [features, labels] = get_data_spiral_2d(1000);
-                    [features_val, labels_val] = get_data_spiral_2d(1000);
+                    [features, labels] = get_data_spiral_2d(500);
+                    [features_val, labels_val] = get_data_spiral_2d(500);
                     niter = 20000;
+                    disp('spiral2d');
                 case 'squares2d'
-                    [features, labels] = get_data_squares_2d(1000);
-                    [features_val, labels_val] = get_data_squares_2d(1000);
+                    [features, labels] = get_data_squares_2d(500);
+                    [features_val, labels_val] = get_data_squares_2d(500);
                     niter = 8000;
+                    disp('squares2d');
                 case 'trivial'
                     [features, labels] = get_data_trivial();
                     [features_val, labels_val] = get_data_trivial();
                     niter = 5000;
+                    disp('trivial');
             end
             
             figure(1); clf;
@@ -74,7 +84,7 @@ for fit = fits
                         rng(seed);
                         prefix = [folder_out '/' networks{inet} '_' fit{1} '_seed' num2str(seed)];
                                                 
-                        networks{inet}
+                        disp(networks{inet});
                         
                         switch networks{inet}
                             case 'Net'
@@ -82,10 +92,10 @@ for fit = fits
                                 b = cell(layer, 1);
                                 for k = 1 : layer
                                     K{k} = randn(2);
-                                    b{k} = zeros(2,1);
+                                    b{k} = zeros(2,500);
                                 end
                                 W = randn(1,2);
-                                W = [10, 10];
+                                %W = [10, 10];
                                 mu = 0;
                                 dt = ones(1, layer);
                                 alpha = zeros(1, layer);
@@ -97,10 +107,10 @@ for fit = fits
                                 b = cell(layer, 1);
                                 for k = 1 : layer
                                     K{k} = randn(2);
-                                    b{k} = zeros(2,1);
+                                    b{k} = zeros(2,500);
                                 end
                                 W = randn(1,2);
-                                W = [10, 10];
+                                %W = [10, 10];
                                 mu = 0;
                                 network = ODENet(dim, layer, K, b, W, mu, [], ...
                                     [], [], [], [], [], ...
@@ -155,12 +165,13 @@ for fit = fits
                                 inner = 0;
                                 norm = 0;
                                 for k = 1 : length(network.K)
-                                    network.K{k} = network_old.K{k} - 1 / lipschitz * grad.K{k};
-                                    network.b{k} = network_old.b{k} - 1 / lipschitz * grad.b{k};
+                                    network.K{k} = network_old.K{k} - (1.0 / lipschitz) * grad.K{k};
+                                    network.b{k} = network_old.b{k} - (1.0 / lipschitz) * repmat(grad.b{k},1,500);
                                     
                                     dk = network.K{k} - network_old.K{k};
                                     db = network.b{k} - network_old.b{k};
-                                    inner = inner + sum(sum(grad.K{k} .* dk))+ sum(sum(grad.b{k} .* db));
+                                    inner = inner + sum(sum(grad.K{k} .* dk))...
+                                            + sum(sum(grad.b{k}' * db));
                                     norm = norm + sum(sum(dk.^2)) + sum(sum(db.^2));
                                 end
                                 
@@ -189,20 +200,20 @@ for fit = fits
                                 new_function_value = network.objective(prediction, labels);
                                 
                                 if backtracking
-                                    fprintf('!')
+                                    %fprintf('!')
                                     
                                     if new_function_value <= function_values(outer_iter) + inner + lipschitz / 2 * norm
                                         lipschitz = lipschitz * bt_down;
-                                        fprintf('\n')
+                                        %fprintf('\n')
                                         break
                                     else
                                         if bt_iter == bt_end
-                                            fprintf('\n')
+                                            %fprintf('\n')
                                         end
                                         lipschitz = lipschitz * bt_up;
                                     end
                                 else
-                                    fprintf('\n')
+                                    %fprintf('\n')
                                     break
                                 end
                                 
@@ -223,24 +234,24 @@ for fit = fits
                                 iterates{outer_iter+1} = copy(network);
                             end
                             
-                            fprintf('iter:%i, obj:%3.5e, lipschitz:%3.5e', ...
-                                outer_iter, function_values(outer_iter), lipschitz)
+%                             fprintf('iter:%i, obj:%3.5e, lipschitz:%3.5e', ...
+%                                 outer_iter, function_values(outer_iter), lipschitz)
                             
                             if mod(outer_iter, plot_every_iterate) == 0
                                 show_prediction(network, features, labels, [-1, 1, -1, 1])
                                 pause(0.1)
                             end
                         end
-                        
+%%                        
                         figure(1); clf;
                         hold off;
-                        yyaxis left
+                        %yyaxis left
                         loglog(function_values);
                         hold on;
                         ylabel('function value');
                         loglog(function_values_val);
                         legend('training', 'test');
-                        yyaxis right
+                        %yyaxis right
                         loglog(lipschitz_constants)
                         ylabel('estimated Lipschitz constant');
                         

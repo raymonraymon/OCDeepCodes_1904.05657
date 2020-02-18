@@ -10,12 +10,12 @@ function show_prediction(network, features, labels, domain, fignum)
         fignum = 1;
     end
 
-    n = 300;
+    n = 100;
     r1 = linspace(domain(1), domain(2), n);
     r2 = linspace(domain(3), domain(4), n);
     [x1, x2] = meshgrid(r1, r2);
     x = [x1(:)'; x2(:)'];
-    prediction = network.forward(x);
+    prediction = network.forward(features);
     y = 1 * reshape(prediction, n, []);
 
     figure(fignum); clf;

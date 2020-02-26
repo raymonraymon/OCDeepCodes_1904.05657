@@ -5,10 +5,6 @@
 %
 % This file runs examples on various data sets and other settings.
 % clc;clear all;close all;
-% dbstop if error;
-clear all
-close all
-clc;
 domain = [-1, 1, -1, 1];
 plot_every_iterate = 0;
 
@@ -245,13 +241,13 @@ for fit = fits
 %%                        
                         figure(1); clf;
                         hold off;
-                        %yyaxis left
+                        yyaxis left
                         loglog(function_values);
                         hold on;
                         ylabel('function value');
                         loglog(function_values_val);
                         legend('training', 'test');
-                        %yyaxis right
+                        yyaxis right
                         loglog(lipschitz_constants)
                         ylabel('estimated Lipschitz constant');
                         

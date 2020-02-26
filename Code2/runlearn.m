@@ -52,7 +52,7 @@ for dataset =   {'donut1d','squares2d','donut2d','spiral2d'}
 %% 
         for nlayers = 15
             fprintf('Starting nlayers=%d\n',nlayers)                   
-            
+            tic
             for rkmethod = {'Euler', 'ImprovedEuler', 'kutta3','kutta4'}
 
                 switch rkmethod{1}
@@ -109,6 +109,6 @@ for dataset =   {'donut1d','squares2d','donut2d','spiral2d'}
                 save([dirname,'/',outfilename],'Ctrls','Method','HBVP','Sit','F_res_it','F_grad_it');
                 fprintf('\nSaved to file %s\n',outfilename)  
             end
-            
+            toc
         end
 end

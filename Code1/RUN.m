@@ -1,2 +1,6 @@
-COMPUTE_RESULTS.m
-CREATE_PLOTS.m
+dbstop if error;
+clear all
+close all
+clc;
+COMPUTE_RESULTS
+CREATE_PLOTS

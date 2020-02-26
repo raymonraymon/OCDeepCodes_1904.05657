@@ -33,7 +33,7 @@ for i = 1 : length(folders)
     xlabel('gradient descent iteration');
     ylabel('function value');
     xlim([1, length(function_values)+1])
-    %xticks(logspace(0, 5, 6))    
+    xticks(logspace(0, 5, 6))    
     legend(legends{1}, 'Location', 'Southwest')
     saveas(gcf, [main_folder{1} '/' folders{i} '/' folders{i} '_' filename_out{1} '.png']);
 end
